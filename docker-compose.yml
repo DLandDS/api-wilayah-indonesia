@@ -1,0 +1,8 @@
+version: '3'
+services:
+  api-wilayah:
+    build: . 
+    image: api-wilayah
+    container_name: api-wilayah
+    ports:
+      - "8084:80"

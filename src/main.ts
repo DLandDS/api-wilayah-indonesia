@@ -248,7 +248,7 @@ async function main(): Promise<void> {
   }
   await Promise.all(districtWorker);
   console.log(`Successfully wrote "district/*.json".`);
-  
+  return;
   console.log(`Writing "villages/*.json"...`);
   const villagesWorker: Promise<void>[] = [];
   for(const district of districts) {
