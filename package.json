@@ -22,7 +22,8 @@
     "typescript": "~4.9"
   },
   "scripts": {
-    "start": "node build/src/main.js",
+    "export": "npm run build && node build/src/export.js",
+    "update": "npm run build && node build/src/update.js",
     "clean": "rimraf coverage build tmp",
     "prebuild": "npm run lint",
     "build": "tsc -p tsconfig.json",
@@ -37,6 +38,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "csv-parse": "^5.3.3",
+    "node-fetch": "^3.3.1",
+    "sqlite3": "^5.1.4",
     "tslib": "~2.4"
   },
   "volta": {
