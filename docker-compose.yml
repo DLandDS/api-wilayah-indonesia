@@ -5,4 +5,4 @@ services:
     image: api-wilayah
     container_name: api-wilayah
     ports:
-      - "8084:80"
+      - "8082:80"
