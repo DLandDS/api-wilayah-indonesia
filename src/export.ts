@@ -130,6 +130,30 @@ async function main(): Promise<void> {
   fs.writeFileSync(provincesJsonFilename, provincesJson);
   console.log(`Successfully wrote "provinces.json".`);
 
+  console.log(`Writing "province/*.json"...`);
+  const provinceWorker: Promise<void>[] = [];
+  for(const province of provinces) {
+    if(provinceWorker.length >= WORKER_COUNT){
+      await Promise.all(provinceWorker);
+      provinceWorker.length = 0;
+    }
+    const provinceJsonFilename = getStaticApiPath(`province/${province.id}.json`);
+    const worker = new Promise<void>((resolve, reject) => {
+      const provinceFiltered = provinces.find((_province) => province.id === _province.id);
+      fs.writeFile(provinceJsonFilename, JSON.stringify(provinceFiltered), (err) => {
+        if(err){
+          console.log(`Error writing "province/${province.id}.json"!`, err);
+          reject();
+        } else {
+          resolve();
+        }
+      });
+    });
+    provinceWorker.push(worker);
+  }
+  await Promise.all(provinceWorker);
+  console.log(`Successfully wrote "province/*.json".`);
+
   console.log(`Writing "regencies/*.json"...`);
   const regenciesWorker: Promise<void>[] = [];
   for(const province of provinces) {
@@ -153,30 +177,6 @@ async function main(): Promise<void> {
   }
   await Promise.all(regenciesWorker);
   console.log(`Successfully wrote "regencies/*.json".`);
-
-  console.log(`Writing "province/*.json"...`);
-  const provinceWorker: Promise<void>[] = [];
-  for(const province of provinces) {
-    if(provinceWorker.length >= WORKER_COUNT){
-      await Promise.all(provinceWorker);
-      provinceWorker.length = 0;
-    }
-    const provinceJsonFilename = getStaticApiPath(`province/${province.id}.json`);
-    const worker = new Promise<void>((resolve, reject) => {
-      const provinceFiltered = provinces.find((province) => province.id === province.id);
-      fs.writeFile(provinceJsonFilename, JSON.stringify(provinceFiltered), (err) => {
-        if(err){
-          console.log(`Error writing "province/${province.id}.json"!`, err);
-          reject();
-        } else {
-          resolve();
-        }
-      });
-    });
-    provinceWorker.push(worker);
-  }
-  await Promise.all(provinceWorker);
-  console.log(`Successfully wrote "province/*.json".`);
   
   console.log(`Writing "regency/*.json"...`);
   const regencyWorker: Promise<void>[] = [];
@@ -187,7 +187,7 @@ async function main(): Promise<void> {
     }
     const regencyJsonFilename = getStaticApiPath(`regency/${regency.id}.json`);
     const worker = new Promise<void>((resolve, reject) => {
-      const regencyFiltered = regencies.find((regency) => regency.id === regency.id);
+      const regencyFiltered = regencies.find((_regency) => regency.id === _regency.id);
       fs.writeFile(regencyJsonFilename, JSON.stringify(regencyFiltered), (err) => {
         if(err){
           console.log(`Error writing "regency/${regency.id}.json"!`, err);
@@ -235,7 +235,7 @@ async function main(): Promise<void> {
     }
     const districtJsonFilename = getStaticApiPath(`district/${district.id}.json`);
     const worker = new Promise<void>((resolve, reject) => {
-      const districtFiltered = districts.find((district) => district.id === district.id);
+      const districtFiltered = districts.find((_district) => district.id === _district.id);
       fs.writeFile(districtJsonFilename, JSON.stringify(districtFiltered), (err) => {
         if(err){
           console.log(`Error writing "district/${district.id}.json"!`, err);
@@ -283,7 +283,7 @@ async function main(): Promise<void> {
     }
     const villageJsonFilename = getStaticApiPath(`village/${village.id}.json`);
     const worker = new Promise<void>((resolve, reject) => {
-      const villageFiltered = villages.find((village) => village.id === village.id);
+      const villageFiltered = villages.find((_village) => village.id === _village.id);
       fs.writeFile(villageJsonFilename, JSON.stringify(villageFiltered), (err) => {
         if(err){
           console.log(`Error writing "village/${village.id}.json"!`, err);
